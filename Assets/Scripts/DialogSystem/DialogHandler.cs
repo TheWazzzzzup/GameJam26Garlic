@@ -73,7 +73,7 @@ namespace DialogSystem
             float lineHeight = _text.preferredHeight / lineCount;
             float viewportHeight = lineHeight * Mathf.Min(_visibleLineCount, lineCount);
             _viewport.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, viewportHeight);
-            SetupFadeOverlays(viewportHeight);
+            SetupFadeOverlays();
 
             RectTransform textRect = _text.rectTransform;
             textRect.anchorMin = new Vector2(0.5f, 0f);
@@ -107,7 +107,7 @@ namespace DialogSystem
             _scrollRoutine = null;
         }
 
-        private void SetupFadeOverlays(float viewportHeight)
+        private void SetupFadeOverlays()
         {
             const int gradientResolution = 64;
 
