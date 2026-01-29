@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -14,14 +15,22 @@ public class EnemyMovement : MonoBehaviour
         if (_playerBehavior is null)
         {
             Debug.LogWarning("No playerBehavior assigned!");
+            return;
         }
+        
+        SetPlayer(_playerBehavior);
     }
 
     private void Update()
     {
         if (_playerBehavior is null) return;
         
-        _directionToPlayer = (_playerBehavior.transform.position - transform.position).normalized;
         transform.Translate(_directionToPlayer * (moveSpeed * Time.deltaTime));
+    }
+
+    public void SetPlayer(PlayerBehavior playerBehavior)
+    {
+        _playerBehavior = playerBehavior;
+        _directionToPlayer = (_playerBehavior.transform.position - transform.position).normalized;
     }
 }
