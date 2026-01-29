@@ -84,6 +84,7 @@ fabric.properties
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -107,6 +108,9 @@ fabric.properties
 
 # Visual Studio cache directory
 .vs/
+
+# Visual Studio Code cache directory
+.vscode/
 
 # Gradle cache directory
 .gradle/
@@ -144,6 +148,7 @@ sysinfo.txt
 *.app
 
 # Crashlytics generated file
+crashlytics-build.properties
 
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
@@ -151,5 +156,27 @@ sysinfo.txt
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+###
+# macOS specific
+###
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+###
+# Windows specific
+###
+Thumbs.db
+Thumbs.db.meta
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/unity,rider
