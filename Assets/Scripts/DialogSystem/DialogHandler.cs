@@ -12,6 +12,10 @@ namespace DialogSystem
         [Header("Display")]
         [SerializeField] private TMP_Text _text;
         [SerializeField] private RectTransform _viewport;
+        
+        // Added Mask reference to handle the "disappearing" logic
+        [SerializeField] private RectMask2D _viewportMask;
+
         [Tooltip("Optional. Text leaving at the top fades out; assign a RawImage to enable.")]
         [SerializeField] private RawImage _topFadeOverlay;
         [Tooltip("Optional. Text entering at the bottom fades in; assign a RawImage to enable.")]
@@ -38,6 +42,10 @@ namespace DialogSystem
         private void Awake()
         {
             _dialogSystemManager.OnQuestionShown += ShowDialog;
+            
+            // Auto-assign mask if not set
+            if (_viewportMask == null && _viewport != null)
+                _viewportMask = _viewport.GetComponent<RectMask2D>();
         }
         
         private void ShowDialog(DialogData data)
@@ -70,9 +78,19 @@ namespace DialogSystem
                 OnDisplayEnded?.Invoke(_dialogData);
                 yield break;
             }
+
             float lineHeight = _text.preferredHeight / lineCount;
             float viewportHeight = lineHeight * Mathf.Min(_visibleLineCount, lineCount);
             _viewport.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, viewportHeight);
+            
+            // Apply padding to the mask so text is hidden behind the fade zones
+            if (_viewportMask != null)
+            {
+                // This forces the text to "exist" only within the visible area
+                // padding = (left, bottom, right, top)
+                _viewportMask.padding = new Vector4(0, -_fadeHeight / 2, 0, -_fadeHeight / 2);
+            }
+
             SetupFadeOverlays();
 
             RectTransform textRect = _text.rectTransform;
@@ -85,12 +103,6 @@ namespace DialogSystem
             float scrollDistance = Mathf.Max(0f, contentHeight + viewportHeight);
 
             OnDisplayStarted?.Invoke();
-
-            if (scrollDistance <= 0f)
-            {
-                OnDisplayEnded?.Invoke(_dialogData);
-                yield break;
-            }
 
             float scrolled = 0f;
             while (scrolled < scrollDistance)
@@ -107,10 +119,10 @@ namespace DialogSystem
             _scrollRoutine = null;
         }
 
+        // --- Rest of your original fade logic remains untouched ---
         private void SetupFadeOverlays()
         {
             const int gradientResolution = 64;
-
             if (_topFadeOverlay != null)
             {
                 if (_topFadeTexture == null)
@@ -122,7 +134,7 @@ namespace DialogSystem
                 r.anchorMin = new Vector2(0f, 1f);
                 r.anchorMax = new Vector2(1f, 1f);
                 r.pivot = new Vector2(0.5f, 1f);
-                r.anchoredPosition = new Vector2(0f, _fadeHeight);
+                r.anchoredPosition = new Vector2(0f, 0f); // Adjusted to sit exactly at the top
                 r.sizeDelta = new Vector2(0f, _fadeHeight);
             }
 
@@ -137,7 +149,7 @@ namespace DialogSystem
                 r.anchorMin = new Vector2(0f, 0f);
                 r.anchorMax = new Vector2(1f, 0f);
                 r.pivot = new Vector2(0.5f, 0f);
-                r.anchoredPosition = new Vector2(0f, -_fadeHeight);
+                r.anchoredPosition = new Vector2(0f, 0f); // Adjusted to sit exactly at the bottom
                 r.sizeDelta = new Vector2(0f, _fadeHeight);
             }
         }
