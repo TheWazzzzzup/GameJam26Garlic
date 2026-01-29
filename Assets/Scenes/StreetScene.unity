@@ -216,6 +216,12 @@ MonoBehaviour:
   enemyPrefab: {fileID: 1502569575649470848, guid: 42d5b423ec000794491b6b93c84047ad, type: 3}
   minSpawnInterval: 2
   maxSpawnInterval: 5
+  tiers:
+  - MinTimeTick: 0
+    MaxTimeTick: 0
+    MinEnemyVoulme: 0
+    MaxEnemyVolume: 0
+  totalTiersTimeSpawn: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

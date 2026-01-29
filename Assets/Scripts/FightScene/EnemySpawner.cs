@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -17,6 +18,10 @@ public class EnemySpawner : MonoBehaviour
 
     [Tooltip("Maximum seconds between spawns.")]
     [SerializeField] private float maxSpawnInterval = 5f;
+    
+    [Header("Difficulty Tier List")]
+    [SerializeField] List<SpawnTier> tiers;
+    [SerializeField] float totalTiersTimeSpawn;
 
     private BoxCollider2D _boxCollider;
 
@@ -100,4 +105,58 @@ public class EnemySpawner : MonoBehaviour
         SpawnAt(new Vector3(bounds.max.x, bounds.max.y, z)); // top-right
         SpawnAt(new Vector3(bounds.min.x, bounds.max.y, z)); // top-left
     }
+}
+
+public class TierList
+{
+    private float currentTime;
+    private float lastDocumentedTimeStamp;
+    private float tierChangeTimeTick;
+
+    private bool isTierChangesValid;
+    public SpawnTier currentTier;
+    
+    public TierList(float totalTiersTimeSpawn, List<SpawnTier> tiers)
+    {
+        if (tiers is null || tiers.Count <= 0)
+        {
+            Debug.LogError("TierList: No tiers available.");
+            return;
+        }
+        if (totalTiersTimeSpawn <= 0)
+        {
+            totalTiersTimeSpawn = 100;
+        }
+        
+        tierChangeTimeTick = totalTiersTimeSpawn / totalTiersTimeSpawn;
+        isTierChangesValid = true;  
+        currentTier = tiers[0];
+    }
+
+    public void StartTier(float startTime)
+    {
+        if (!isTierChangesValid)
+        {
+            Debug.LogError("TierList: No tiers available.");
+            return;
+        }
+        currentTime = Time.time;
+    }
+    
+    public void CheckForTierChange()
+    {
+        // check the start time - current timer
+        // save the delta
+        // how many times this delta fits inside the tierchangetimetick = current tier
+        // safe guard from index < 0 or >= to list length
+    }
+}
+
+[System.Serializable]
+public class SpawnTier
+{
+    public float MinTimeTick;
+    public float MaxTimeTick;
+    public float MinEnemyVoulme;
+    public float MaxEnemyVolume;
 }
