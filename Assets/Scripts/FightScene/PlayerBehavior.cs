@@ -2,11 +2,19 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// 2D mouse-follow player movement with acceleration, drift-style course correction, and boost.
-/// Uses legacy Input (Input.mousePosition, Input.GetKeyDown). Transform-based; z kept at 0.
+/// 2D mouse-follow player movement with acceleration, drift-style course correction,
+/// arrival overshoot, correction, and micro-orbit settle. Uses legacy Input; Transform-based; z = 0.
 /// </summary>
 public class PlayerBehavior : MonoBehaviour
 {
+    public enum MovementState
+    {
+        Chase,
+        Overshoot,
+        Correction,
+        Settled
+    }
+
     // -------------------------------------------------------------------------
     // Boost feedback (subscribe from VFX/Audio components)
     // -------------------------------------------------------------------------
@@ -70,13 +78,69 @@ public class PlayerBehavior : MonoBehaviour
     [SerializeField] private bool drawDebugRay;
 
     // -------------------------------------------------------------------------
+    // Inspector: Arrival / Overshoot
+    // -------------------------------------------------------------------------
+    [Header("Arrival / Overshoot")]
+    [Tooltip("Distance to mouse at which overshoot triggers (chase ends, single overshoot then correction).")]
+    [SerializeField] [Min(0f)] private float arrivalDistance = 1.5f;
+
+    [Tooltip("Overshoot distance = currentSpeed * this (world units).")]
+    [SerializeField] [Min(0f)] private float overshootMultiplier = 0.4f;
+
+    [Tooltip("Distance to correction target below which we enter Settled micro-orbit.")]
+    [SerializeField] [Min(0.01f)] private float settleDistanceThreshold = 0.15f;
+
+    // -------------------------------------------------------------------------
+    // Inspector: Correction
+    // -------------------------------------------------------------------------
+    [Header("Correction")]
+    [Tooltip("Move speed toward target = factor * distance (smooth deceleration).")]
+    [SerializeField] [Min(0.01f)] private float correctionSpeedFactor = 4f;
+
+    [Tooltip("Max speed when correcting back toward target.")]
+    [SerializeField] [Min(0f)] private float correctionMaxSpeed = 6f;
+
+    // -------------------------------------------------------------------------
+    // Inspector: Micro-Orbit (Settle)
+    // -------------------------------------------------------------------------
+    [Header("Micro-Orbit (Settle)")]
+    [Tooltip("Radius of tiny orbit around mouse (very small, subtle hover).")]
+    [SerializeField] [Min(0.01f)] private float orbitIntensity = 0.2f;
+
+    [Tooltip("Orbit angle advance in rad/s (subtle motion).")]
+    [SerializeField] [Min(0f)] private float orbitAngularSpeed = 1.5f;
+
+    // -------------------------------------------------------------------------
+    // Inspector: Re-engagement
+    // -------------------------------------------------------------------------
+    [Header("Re-engagement")]
+    [Tooltip("When mouse moves this far from settle anchor, exit micro-orbit and resume chase.")]
+    [SerializeField] [Min(0f)] private float reEngageDistance = 1f;
+
+    // -------------------------------------------------------------------------
     // Runtime state
     // -------------------------------------------------------------------------
+    private MovementState _state = MovementState.Chase;
     private Vector2 _currentMoveDirection = Vector2.right;
     private float _currentSpeed;
     private float _boostTimerRemaining;
     private float _boostCooldownRemaining;
     private bool _isBoosting;
+
+    // Overshoot state
+    private Vector2 _overshootDirection;
+    private float _overshootDistance;
+    private float _overshootTraveled;
+    private float _overshootSpeed;
+    private Vector2 _markedMousePosition;
+
+    // Correction state
+    private Vector2 _correctionTarget;
+
+    // Settled state
+    private Vector2 _settleAnchorPosition;
+    private float _orbitAngle;
+    private Vector2 _orbitMoveDirection;
 
     private void Awake()
     {
@@ -101,7 +165,22 @@ public class PlayerBehavior : MonoBehaviour
     {
         float dt = Time.deltaTime;
         UpdateBoost(dt);
-        UpdateMovement(dt);
+
+        switch (_state)
+        {
+            case MovementState.Chase:
+                UpdateChase(dt);
+                break;
+            case MovementState.Overshoot:
+                UpdateOvershoot(dt);
+                break;
+            case MovementState.Correction:
+                UpdateCorrection(dt);
+                break;
+            case MovementState.Settled:
+                UpdateSettle(dt);
+                break;
+        }
     }
 
     /// <summary>
@@ -170,10 +249,26 @@ public class PlayerBehavior : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies movement: smoothed direction and accelerated speed, then updates position (z = 0).
+    /// Chase state: move toward mouse with drift and acceleration. Transitions to Overshoot when within arrivalDistance.
     /// </summary>
-    public void UpdateMovement(float deltaTime)
+    public void UpdateChase(float deltaTime)
     {
+        Vector2 mouseWorld = GetMouseWorldPosition();
+        float distToMouse = Vector2.Distance((Vector2)transform.position, mouseWorld);
+
+        if (arrivalDistance >= 0.001f && distToMouse <= arrivalDistance)
+        {
+            _state = MovementState.Overshoot;
+            _markedMousePosition = mouseWorld;
+            _overshootDirection = _currentMoveDirection.normalized;
+            if (_overshootDirection.sqrMagnitude < 0.01f)
+                _overshootDirection = Vector2.right;
+            _overshootSpeed = _currentSpeed;
+            _overshootDistance = Mathf.Max(0f, _overshootSpeed * overshootMultiplier);
+            _overshootTraveled = 0f;
+            return;
+        }
+
         Vector2 dir = GetSmoothedDirection(deltaTime);
         float speed = GetCurrentSpeed(deltaTime);
 
@@ -186,6 +281,101 @@ public class PlayerBehavior : MonoBehaviour
 
         if (drawDebugRay)
             Debug.DrawRay(transform.position, (Vector3)dir * 2f, Color.green, 0.5f);
+    }
+
+    /// <summary>
+    /// Overshoot state: move in stored direction until overshoot distance is traveled, then transition to Correction.
+    /// </summary>
+    public void UpdateOvershoot(float deltaTime)
+    {
+        float remaining = _overshootDistance - _overshootTraveled;
+        float step = _overshootSpeed * deltaTime;
+        if (step > remaining)
+            step = remaining;
+
+        Vector2 move = _overshootDirection * step;
+        _overshootTraveled += step;
+
+        Vector3 pos = transform.position;
+        pos.x += move.x;
+        pos.y += move.y;
+        pos.z = 0f;
+        transform.position = pos;
+
+        if (_overshootTraveled >= _overshootDistance - 0.0001f)
+        {
+            _state = MovementState.Correction;
+            _correctionTarget = _markedMousePosition;
+        }
+    }
+
+    /// <summary>
+    /// Correction state: move toward marked target with distance-based speed (smooth deceleration). Transition to Settled when within threshold.
+    /// </summary>
+    public void UpdateCorrection(float deltaTime)
+    {
+        Vector2 pos2 = transform.position;
+        float distToTarget = Vector2.Distance(pos2, _correctionTarget);
+
+        if (distToTarget <= settleDistanceThreshold)
+        {
+            _state = MovementState.Settled;
+            _settleAnchorPosition = GetMouseWorldPosition();
+            _orbitAngle = 0f;
+            _orbitMoveDirection = Vector2.right;
+            return;
+        }
+
+        Vector2 dir = (_correctionTarget - pos2).normalized;
+        float speed = Mathf.Min(correctionSpeedFactor * distToTarget, correctionMaxSpeed);
+        Vector2 move = dir * speed * deltaTime;
+        if (move.magnitude > distToTarget)
+            move = dir * distToTarget;
+
+        Vector3 pos = transform.position;
+        pos.x += move.x;
+        pos.y += move.y;
+        pos.z = 0f;
+        transform.position = pos;
+    }
+
+    /// <summary>
+    /// Settled state: tiny micro-orbit around current mouse with momentum-style smoothing. Re-engage to Chase when mouse moves beyond reEngageDistance from anchor.
+    /// </summary>
+    public void UpdateSettle(float deltaTime)
+    {
+        Vector2 mouseWorld = GetMouseWorldPosition();
+        if (Vector2.Distance(mouseWorld, _settleAnchorPosition) > reEngageDistance)
+        {
+            _state = MovementState.Chase;
+            return;
+        }
+
+        _orbitAngle += orbitAngularSpeed * deltaTime;
+        Vector2 center = mouseWorld;
+        Vector2 radial = new Vector2(Mathf.Cos(_orbitAngle), Mathf.Sin(_orbitAngle));
+        Vector2 tangent = new Vector2(-radial.y, radial.x);
+        Vector2 targetOnCircle = center + radial * orbitIntensity;
+        Vector2 pos2 = transform.position;
+        Vector2 toTarget = targetOnCircle - pos2;
+
+        float blendT = Mathf.Clamp01(deltaTime / Mathf.Max(0.01f, directionSmoothing));
+        Vector2 desiredDir = toTarget.sqrMagnitude > 0.0001f ? toTarget.normalized : tangent;
+        _orbitMoveDirection = Vector2.Lerp(_orbitMoveDirection, desiredDir, blendT).normalized;
+        if (_orbitMoveDirection.sqrMagnitude < 0.01f)
+            _orbitMoveDirection = tangent;
+
+        float moveSpeed = orbitIntensity * orbitAngularSpeed;
+        Vector2 move = _orbitMoveDirection * moveSpeed * deltaTime;
+        float distToTarget = toTarget.magnitude;
+        if (move.magnitude > distToTarget && distToTarget > 0.0001f)
+            move = move.normalized * distToTarget;
+
+        Vector3 pos = transform.position;
+        pos.x += move.x;
+        pos.y += move.y;
+        pos.z = 0f;
+        transform.position = pos;
     }
 
     /// <summary>
