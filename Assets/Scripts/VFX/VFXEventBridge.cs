@@ -87,16 +87,19 @@ public class VFXEventBridge : MonoBehaviour
             switch (eventType)
             {
                 case KnownEvent.BoostStarted:
-                    (source as PlayerBehavior)?.OnBoostStarted -= action;
+                    var behavior = (source as PlayerBehavior);
+                    if (behavior != null) behavior.OnBoostStarted -= action;
                     break;
                 case KnownEvent.BoostEnded:
-                    (source as PlayerBehavior)?.OnBoostEnded -= action;
+                    var playerBehavior = (source as PlayerBehavior);
+                    if (playerBehavior != null) playerBehavior.OnBoostEnded -= action;
                     break;
                 case KnownEvent.Death:
                     Data.OnDeath -= action;
                     break;
                 case KnownEvent.EnemyDealDamage:
-                    (source as EnemyCollision)?.EnemyDealDamage -= action;
+                    var collision = (source as EnemyCollision);
+                    if (collision != null) collision.EnemyDealDamage -= action;
                     break;
             }
         }
