@@ -458,7 +458,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5218857406599564294}
   - component: {fileID: 1414168256897674540}
-  - component: {fileID: 6741895196367198974}
   m_Layer: 5
   m_Name: BarView
   m_TagString: Untagged
@@ -538,20 +537,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6741895196367198974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7205094737931446086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e627e63c588423882ffaf9786d11377, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthSlider: {fileID: 3847014627953701065}
-  healthText: {fileID: 9143846185295676772}
 --- !u!1 &8670231291167032582
 GameObject:
   m_ObjectHideFlags: 0
