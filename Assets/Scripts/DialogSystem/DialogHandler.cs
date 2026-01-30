@@ -21,16 +21,6 @@ namespace DialogSystem
         [Tooltip("Optional. Text entering at the bottom fades in; assign a RawImage to enable.")]
         [SerializeField] private RawImage _bottomFadeOverlay;
 
-        [Header("Configuration")]
-        [Tooltip("Number of lines visible in the viewport at once (e.g. 2–3).")]
-        [SerializeField] [Min(1)] private int _visibleLineCount = 3;
-        [Tooltip("How fast the text scrolls up (units per second).")]
-        [SerializeField] [Min(0.1f)] private float _scrollSpeed = 80f;
-        [Tooltip("Height of the fade zone at top and bottom (in pixels).")]
-        [SerializeField] [Min(1)] private float _fadeHeight = 48f;
-        [Tooltip("Color used for the fade overlay (e.g. match your dialog background).")]
-        [SerializeField] private Color _fadeColor = Color.black;
-
         public event Action OnDisplayStarted;
         public event Action<DialogData, bool> OnDisplayEnded;
 
@@ -38,9 +28,18 @@ namespace DialogSystem
         private DialogData _dialogData;
         private Texture2D _topFadeTexture;
         private Texture2D _bottomFadeTexture;
+        private DialogDisplayConfig _config;
 
         private void Awake()
         {
+            _config = DialogDisplayConfig.Instance;
+            if (_config == null)
+            {
+                Debug.LogError("DialogDisplayConfig not found! Please create one in Resources/Configs/");
+                enabled = false;
+                return;
+            }
+
             _dialogSystemManager.OnQuestionShown += ShowDialog;
             _dialogSystemManager.OnQuestionDone += ShowAnswer;
             
@@ -89,7 +88,7 @@ namespace DialogSystem
             }
 
             float lineHeight = _text.preferredHeight / lineCount;
-            float viewportHeight = lineHeight * Mathf.Min(_visibleLineCount, lineCount);
+            float viewportHeight = lineHeight * Mathf.Min(_config.VisibleLineCount, lineCount);
             _viewport.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, viewportHeight);
             
             // Apply padding to the mask so text is hidden behind the fade zones
@@ -116,7 +115,7 @@ namespace DialogSystem
             float scrolled = 0f;
             while (scrolled < scrollDistance)
             {
-                float step = _scrollSpeed * Time.deltaTime;
+                float step = _config.ScrollSpeed * Time.deltaTime;
                 scrolled += step;
                 if (scrolled > scrollDistance) step -= (scrolled - scrollDistance);
                 textRect.anchoredPosition += Vector2.up * step;
@@ -137,14 +136,14 @@ namespace DialogSystem
                 if (_topFadeTexture == null)
                     _topFadeTexture = CreateGradientTexture(gradientResolution, fadeAtTop: false);
                 _topFadeOverlay.texture = _topFadeTexture;
-                _topFadeOverlay.color = _fadeColor;
+                _topFadeOverlay.color = _config.FadeColor;
                 _topFadeOverlay.raycastTarget = false;
                 RectTransform r = _topFadeOverlay.rectTransform;
                 r.anchorMin = new Vector2(0f, 1f);
                 r.anchorMax = new Vector2(1f, 1f);
                 r.pivot = new Vector2(0.5f, 1f);
                 r.anchoredPosition = new Vector2(0f, 0f); // Adjusted to sit exactly at the top
-                r.sizeDelta = new Vector2(0f, _fadeHeight);
+                r.sizeDelta = new Vector2(0f, _config.FadeHeight);
             }
 
             if (_bottomFadeOverlay != null)
@@ -152,14 +151,14 @@ namespace DialogSystem
                 if (_bottomFadeTexture == null)
                     _bottomFadeTexture = CreateGradientTexture(gradientResolution, fadeAtTop: true);
                 _bottomFadeOverlay.texture = _bottomFadeTexture;
-                _bottomFadeOverlay.color = _fadeColor;
+                _bottomFadeOverlay.color = _config.FadeColor;
                 _bottomFadeOverlay.raycastTarget = false;
                 RectTransform r = _bottomFadeOverlay.rectTransform;
                 r.anchorMin = new Vector2(0f, 0f);
                 r.anchorMax = new Vector2(1f, 0f);
                 r.pivot = new Vector2(0.5f, 0f);
                 r.anchoredPosition = new Vector2(0f, 0f); // Adjusted to sit exactly at the bottom
-                r.sizeDelta = new Vector2(0f, _fadeHeight);
+                r.sizeDelta = new Vector2(0f, _config.FadeHeight);
             }
         }
 

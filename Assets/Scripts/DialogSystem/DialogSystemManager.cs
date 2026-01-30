@@ -14,11 +14,6 @@ namespace DialogSystem
             AllQuestionsDone
         }
 
-        [Header("System configuration")]
-        [SerializeField] private float _minAskQuestionTimeRange = 5f;
-        [SerializeField] private float _maxAskQuestionTimeRange = 15f;
-        [SerializeField] private DialogData[] dialogs;
-
         public event Action<DialogData> OnQuestionShown;
         public event Action OnAllQuestionsDone;
         public event Action<bool> OnQuestionDone; 
@@ -27,12 +22,21 @@ namespace DialogSystem
         private HashSet<int> _askedDialogIndices;
         private int _currentDialogIndex;
         private float _nextQuestionTime;
+        private DialogSystemConfig _config;
         
-        public DialogData CurrentDialog => dialogs != null && _currentDialogIndex >= 0 && _currentDialogIndex < dialogs.Length ? dialogs[_currentDialogIndex] : null;
+        public DialogData CurrentDialog => _config?.Dialogs != null && _currentDialogIndex >= 0 && _currentDialogIndex < _config.Dialogs.Length ? _config.Dialogs[_currentDialogIndex] : null;
         public DialogState State => _state;
 
         private void Awake()
         {
+            _config = DialogSystemConfig.Instance;
+            if (_config == null)
+            {
+                Debug.LogError("DialogSystemConfig not found! Please create one in Resources/Configs/");
+                enabled = false;
+                return;
+            }
+
             _askedDialogIndices = new HashSet<int>();
             _currentDialogIndex = -1;
             _state = DialogState.WaitingForNextQuestion;
@@ -51,12 +55,13 @@ namespace DialogSystem
 
         private void ScheduleNextQuestion()
         {
-            _nextQuestionTime = Random.Range(_minAskQuestionTimeRange, _maxAskQuestionTimeRange);
+            if (_config == null) return;
+            _nextQuestionTime = Random.Range(_config.MinAskQuestionTimeRange, _config.MaxAskQuestionTimeRange);
         }
 
         private void TryShowNextQuestion()
         {
-            if (dialogs == null || dialogs.Length == 0)
+            if (_config == null || _config.Dialogs == null || _config.Dialogs.Length == 0)
             {
                 _state = DialogState.AllQuestionsDone;
                 OnAllQuestionsDone?.Invoke();
@@ -64,9 +69,9 @@ namespace DialogSystem
             }
 
             var unaskedIndices = new List<int>();
-            for (int i = 0; i < dialogs.Length; i++)
+            for (int i = 0; i < _config.Dialogs.Length; i++)
             {
-                if (dialogs[i] != null && !_askedDialogIndices.Contains(i))
+                if (_config.Dialogs[i] != null && !_askedDialogIndices.Contains(i))
                     unaskedIndices.Add(i);
             }
 
@@ -80,7 +85,7 @@ namespace DialogSystem
             _currentDialogIndex = unaskedIndices[Random.Range(0, unaskedIndices.Count)];
             _askedDialogIndices.Add(_currentDialogIndex);
             _state = DialogState.WaitingForAnswer;
-            OnQuestionShown?.Invoke(dialogs[_currentDialogIndex]);
+            OnQuestionShown?.Invoke(_config.Dialogs[_currentDialogIndex]);
         }
 
         public void SubmitAnswer(int answerIndex)
