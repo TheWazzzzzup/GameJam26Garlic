@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using DefaultNamespace;
+using UnityEngine;
 
 public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] private EnemyCollision enemyCollision;
 
+    [SerializeField] private float health = 10;
+    
     private void Awake()
     {
         if (enemyCollision is null)
@@ -11,12 +14,16 @@ public class EnemyBehavior : MonoBehaviour
             Debug.LogError("NoCollision");
             return;
         }
-        enemyCollision.EnemyHitPlayer += OnPlayerDeath;
+        enemyCollision.EnemyDealDamage += AcceptDamage;
     }
-
-    public void OnPlayerDeath()
+    
+    void AcceptDamage()
     {
-        Debug.Log("Player death");
-        Destroy(gameObject);
+        health -= Data.PlayerDamage;
+        
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

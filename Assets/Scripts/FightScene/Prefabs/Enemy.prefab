@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d39fce5f44c749468fe6041c3bc28b27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerBehavior: {fileID: 0}
+  dateSite: {fileID: 0}
   moveSpeed: 10
 --- !u!70 &2165347156498720530
 CapsuleCollider2D:
@@ -178,6 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyCollision: {fileID: 5826551759653917332}
+  health: 10
 --- !u!114 &5826551759653917332
 MonoBehaviour:
   m_ObjectHideFlags: 0
