@@ -200,6 +200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 185859601}
+  - component: {fileID: 185859602}
   m_Layer: 5
   m_Name: ViewPort
   m_TagString: Untagged
@@ -229,6 +230,20 @@ RectTransform:
   m_AnchoredPosition: {x: -400, y: 250}
   m_SizeDelta: {x: 1000, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &185859602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 185859600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding: {x: 0, y: 0, z: 0, w: 0}
+  m_Softness: {x: 0, y: 0}
 --- !u!224 &336707485 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 147315854914587650, guid: eefbcc1b727764bb7a51bae3fac466cc, type: 3}
@@ -403,10 +418,11 @@ MonoBehaviour:
   _dialogSystemManager: {fileID: 686600726}
   _text: {fileID: 1321805004}
   _viewport: {fileID: 185859601}
+  _viewportMask: {fileID: 185859602}
   _topFadeOverlay: {fileID: 2027605946}
   _bottomFadeOverlay: {fileID: 994020886}
-  _visibleLineCount: 3
-  _scrollSpeed: 80
+  _visibleLineCount: 5
+  _scrollSpeed: 50
   _fadeHeight: 48
   _fadeColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &686600726
@@ -424,7 +440,7 @@ MonoBehaviour:
   _minAskQuestionTimeRange: 1
   _maxAskQuestionTimeRange: 3
   dialogs:
-  - {fileID: 11400000, guid: 954421abeb9bc4008a2a54d7c758ec9f, type: 2}
+  - {fileID: 11400000, guid: fbab23126da4a47c7aa5267c9778176b, type: 2}
 --- !u!1 &994020885
 GameObject:
   m_ObjectHideFlags: 0

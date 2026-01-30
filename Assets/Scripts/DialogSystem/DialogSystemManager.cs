@@ -21,6 +21,7 @@ namespace DialogSystem
 
         public event Action<DialogData> OnQuestionShown;
         public event Action OnAllQuestionsDone;
+        public event Action<bool> OnQuestionDone; 
 
         private DialogState _state;
         private HashSet<int> _askedDialogIndices;
@@ -87,6 +88,15 @@ namespace DialogSystem
             if (_state != DialogState.WaitingForAnswer)
                 return;
 
+            if (CurrentDialog.RightAnswer == answerIndex)
+            {
+                OnQuestionDone?.Invoke(true);
+            }
+            else
+            {
+                OnQuestionDone?.Invoke(false);
+            }
+            
             _state = DialogState.WaitingForNextQuestion;
             ScheduleNextQuestion();
         }

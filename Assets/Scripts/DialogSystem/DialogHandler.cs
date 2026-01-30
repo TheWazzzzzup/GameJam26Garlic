@@ -32,7 +32,7 @@ namespace DialogSystem
         [SerializeField] private Color _fadeColor = Color.black;
 
         public event Action OnDisplayStarted;
-        public event Action<DialogData> OnDisplayEnded;
+        public event Action<DialogData, bool> OnDisplayEnded;
 
         private Coroutine _scrollRoutine;
         private DialogData _dialogData;
@@ -42,12 +42,21 @@ namespace DialogSystem
         private void Awake()
         {
             _dialogSystemManager.OnQuestionShown += ShowDialog;
+            _dialogSystemManager.OnQuestionDone += ShowAnswer;
             
             // Auto-assign mask if not set
             if (_viewportMask == null && _viewport != null)
                 _viewportMask = _viewport.GetComponent<RectMask2D>();
         }
-        
+
+        private void ShowAnswer(bool answerCorrectly)
+        {
+            if (_dialogData == null) return;
+
+            string replyText = answerCorrectly ? _dialogData.RightAnswerReply : _dialogData.WrongAnswerReply;
+            ShowDialog(replyText ?? string.Empty, true);
+        }
+
         private void ShowDialog(DialogData data)
         {
             if (data == null) return;
@@ -55,7 +64,7 @@ namespace DialogSystem
             ShowDialog(data.Dialog ?? string.Empty);
         }
 
-        private void ShowDialog(string content)
+        private void ShowDialog(string content, bool isShowingAnswer = false)
         {
             if (content == null || _text == null || _viewport == null) return;
 
@@ -64,10 +73,10 @@ namespace DialogSystem
 
             _text.text = content;
             _text.ForceMeshUpdate(true);
-            _scrollRoutine = StartCoroutine(ScrollRoutine());
+            _scrollRoutine = StartCoroutine(ScrollRoutine(isShowingAnswer));
         }
 
-        private IEnumerator ScrollRoutine()
+        private IEnumerator ScrollRoutine(bool isShowingAnswer)
         {
             yield return null;
 
@@ -75,7 +84,7 @@ namespace DialogSystem
             int lineCount = _text.textInfo.lineCount;
             if (lineCount == 0)
             {
-                OnDisplayEnded?.Invoke(_dialogData);
+                OnDisplayEnded?.Invoke(_dialogData, isShowingAnswer);
                 yield break;
             }
 
@@ -88,7 +97,7 @@ namespace DialogSystem
             {
                 // This forces the text to "exist" only within the visible area
                 // padding = (left, bottom, right, top)
-                _viewportMask.padding = new Vector4(0, -_fadeHeight / 2, 0, -_fadeHeight / 2);
+                _viewportMask.padding = Vector4.zero;
             }
 
             SetupFadeOverlays();
@@ -115,7 +124,7 @@ namespace DialogSystem
             }
 
             textRect.anchoredPosition = new Vector2(textRect.anchoredPosition.x, scrollDistance);
-            OnDisplayEnded?.Invoke(_dialogData);
+            OnDisplayEnded?.Invoke(_dialogData, isShowingAnswer);
             _scrollRoutine = null;
         }
 

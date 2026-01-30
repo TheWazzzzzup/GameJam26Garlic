@@ -52,9 +52,11 @@ namespace DialogSystem
             HideDialog();
         }
 
-        private void ShowQuestion(DialogData dialog)
+        private void ShowQuestion(DialogData dialog, bool isShowingAnswer)
         {
             if (dialog == null) return;
+            
+            if (isShowingAnswer) return;
 
             if (_dialogPanel != null)
                 _dialogPanel.SetActive(true);

@@ -4,9 +4,10 @@ using UnityEngine;
 public class DialogData : ScriptableObject
 {
     [TextArea(5, 20)] public string Dialog;
-    public string Question;
-    public string[] Answers;
-    public int RightAnswer;
-    public string RightAnswerReply;
-    public string WrongAnswerReply;
+    [SerializeField,TextArea(5, 20)] public string RightAnswerReply;
+    [SerializeField,TextArea(5, 20)] public string WrongAnswerReply;
+    
+    [SerializeField] public string Question;
+    [SerializeField] public string[] Answers;
+    [SerializeField] public int RightAnswer;
 }
