@@ -28,6 +28,8 @@ namespace DefaultNamespace.SatisfactionSystem
                 return;
             }
 
+            Data.MaxSatisfaction = MaxSatisfaction;
+            Data.CurrentSatisfaction = _currentSatisfaction;
             _currentSatisfaction = _config.OverAllSatisfaction;
             _dialogSystemManager.OnQuestionDone += OnQuestionDone;
         }
@@ -82,7 +84,7 @@ namespace DefaultNamespace.SatisfactionSystem
         {
             float previousSatisfaction = _currentSatisfaction;
             _currentSatisfaction = Mathf.Clamp(_currentSatisfaction + delta, 0f, _config != null ? _config.OverAllSatisfaction : float.MaxValue);
-
+            Data.CurrentSatisfaction = _currentSatisfaction;
             if (!Mathf.Approximately(previousSatisfaction, _currentSatisfaction))
                 OnSatisfactionChanged?.Invoke(_currentSatisfaction);
 
