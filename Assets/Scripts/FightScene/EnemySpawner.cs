@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("refs")]
-    [SerializeField] PlayerBehavior playerBehavior;
+    [SerializeField] DateSiteBehavior dateSite;
     
     [Header("Spawn Area")]
     [Tooltip("Enemy prefab to spawn.")]
@@ -111,7 +111,7 @@ public class EnemySpawner : MonoBehaviour
         GameObject go = Instantiate(enemyPrefab, worldPosition, Quaternion.identity, transform);
         if (go.TryGetComponent(out EnemyMovement movement))
         {
-            movement.SetPlayer(playerBehavior);
+            movement.SetDateSite(dateSite);
             movement.InitEnemy(_tierList?.currentTier);
         }
     }

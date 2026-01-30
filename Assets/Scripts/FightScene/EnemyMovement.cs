@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 
 public class EnemyMovement : MonoBehaviour
 {
-    [Header("Refs (devs only rat bitches)"), SerializeField] private PlayerBehavior _playerBehavior;
+    [Header("Refs (devs only rat bitches)"), SerializeField] private DateSiteBehavior dateSite;
 
     [Header("Movement Speed"), Range(0.001f, 10f), SerializeField] private float moveSpeed;
 
@@ -12,26 +12,26 @@ public class EnemyMovement : MonoBehaviour
 
     private void Start()
     {
-        if (_playerBehavior is null)
+        if (dateSite is null)
         {
             Debug.LogWarning("No playerBehavior assigned!");
             return;
         }
         
-        SetPlayer(_playerBehavior);
+        SetDateSite(dateSite);
     }
 
     private void Update()
     {
-        if (_playerBehavior is null) return;
+        if (dateSite is null) return;
         
         transform.Translate(_directionToPlayer * (moveSpeed * Time.deltaTime));
     }
 
-    public void SetPlayer(PlayerBehavior playerBehavior)
+    public void SetDateSite(DateSiteBehavior dateSite)
     {
-        _playerBehavior = playerBehavior;
-        _directionToPlayer = (_playerBehavior.transform.position - transform.position).normalized;
+        this.dateSite = dateSite;
+        _directionToPlayer = (dateSite.transform.position - transform.position).normalized;
     }
 
     public void InitEnemy(SpawnTier tier)
