@@ -6,6 +6,7 @@ using UnityEngine;
 public class DateSiteBehavior : MonoBehaviour
 {
     private bool gameLost;
+    private bool canReturnToDate;
     
     private void Awake()
     {
@@ -17,6 +18,19 @@ public class DateSiteBehavior : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             AcceptDamage(Data.EnemyDamage);
+        }
+
+        if (canReturnToDate && other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            // return to date;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            canReturnToDate = true;
         }
     }
 

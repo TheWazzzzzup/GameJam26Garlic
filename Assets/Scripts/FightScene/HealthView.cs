@@ -22,22 +22,3 @@ public class HealthView : MonoBehaviour
         healthText.text = $"Health:{Data.CurrentHealth}";
     }
 }
-
-public class SatisfactionView : MonoBehaviour
-{
-    [SerializeField] Slider slider;
-    [SerializeField]TMP_Text text;
-    
-    private void Awake()
-    {
-        slider.maxValue = Data.MaxSatisfaction;
-        slider.minValue = 0;
-        text.text = $"Satisfaction:{Data.CurrentSatisfaction}";
-    }
-
-    private void FixedUpdate()
-    {
-        slider.value = Data.CurrentSatisfaction;
-        text.text = $"Satisfaction:{Data.CurrentSatisfaction}";
-    }
-}

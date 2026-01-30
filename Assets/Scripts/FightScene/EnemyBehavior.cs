@@ -5,7 +5,7 @@ public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] private EnemyCollision enemyCollision;
 
-    [SerializeField] private float health = 10;
+    [SerializeField] private float health = 2;
     
     private void Awake()
     {
@@ -19,7 +19,7 @@ public class EnemyBehavior : MonoBehaviour
     
     void AcceptDamage()
     {
-        health -= Data.PlayerDamage;
+        health -= Data.GetPlayerDamage();
         
         if (health <= 0)
         {

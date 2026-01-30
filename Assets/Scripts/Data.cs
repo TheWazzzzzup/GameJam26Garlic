@@ -1,4 +1,5 @@
 using System;
+using Random = UnityEngine.Random;
 
 namespace DefaultNamespace
 {
@@ -7,7 +8,8 @@ namespace DefaultNamespace
         public static int AskQuestions;
         public static int TotalQuestions;
 
-        public static float PlayerDamage = 5;
+        private static float PlayerMinDamage = 5;
+        private static float PlayerMaxDamage = 5;
         
         public static float MaxHealth = 1000;
         public static float CurrentHealth = MaxHealth;
@@ -19,5 +21,11 @@ namespace DefaultNamespace
         public static event Action OnDeath;
 
         public static void RaiseDeath() => OnDeath?.Invoke();
+
+        public static float GetPlayerDamage()
+        {
+            return Random.Range(PlayerMinDamage, PlayerMaxDamage);
+        }
+        
     }
 }
