@@ -33,4 +33,11 @@ public class EnemyMovement : MonoBehaviour
         _playerBehavior = playerBehavior;
         _directionToPlayer = (_playerBehavior.transform.position - transform.position).normalized;
     }
+
+    public void InitEnemy(SpawnTier tier)
+    {
+        if (tier is null) return;
+
+        moveSpeed = tier.EnemySpeed;
+    }
 }

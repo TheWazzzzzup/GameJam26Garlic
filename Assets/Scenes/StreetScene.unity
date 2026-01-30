@@ -216,6 +216,18 @@ MonoBehaviour:
   enemyPrefab: {fileID: 1502569575649470848, guid: 42d5b423ec000794491b6b93c84047ad, type: 3}
   minSpawnInterval: 2
   maxSpawnInterval: 5
+  tiers:
+  - MinTimeTick: 1
+    MaxTimeTick: 1
+    MinEnemyVolume: 2
+    MaxEnemyVolume: 2
+    EnemySpeed: 3
+  - MinTimeTick: 1
+    MaxTimeTick: 1
+    MinEnemyVolume: 3
+    MaxEnemyVolume: 3
+    EnemySpeed: 8
+  totalTiersTimeSpawn: 20
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,6 +407,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 528364307227055701, guid: 25e85b8e936f7e1488d79f9be908bd96, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 519420031}
     - target: {fileID: 657571399073035053, guid: 25e85b8e936f7e1488d79f9be908bd96, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
