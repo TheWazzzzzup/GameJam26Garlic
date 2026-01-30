@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StreetScene.unity
     guid: 60aba812ba108644e98292745042568f
+  - enabled: 1
+    path: Assets/Scenes/Main Menu.unity
+    guid: 9377dee9199933242a5c4d54c0fef70b
   m_configObjects: {}
