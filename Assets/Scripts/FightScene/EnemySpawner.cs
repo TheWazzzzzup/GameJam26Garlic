@@ -22,6 +22,8 @@ public class EnemySpawner : MonoBehaviour
     [Header("Difficulty Tier List")]
     [SerializeField] List<SpawnTier> tiers;
     [SerializeField] float totalTiersTimeSpawn;
+    TierList _tierList;
+    private bool tierIsActive;
 
     private BoxCollider2D _boxCollider;
 
@@ -45,17 +47,51 @@ public class EnemySpawner : MonoBehaviour
         }
 
         StartCoroutine(SpawnLoop());
+        
+        // Tiers
+        if (tiers is not null &&
+            tiers.Count > 0 &&
+            totalTiersTimeSpawn > 0)
+        {
+            _tierList = new TierList(totalTiersTimeSpawn, tiers);
+            _tierList.StartTiers();
+            tierIsActive = true;
+        }
     }
 
     private IEnumerator SpawnLoop()
     {
         while (enabled && enemyPrefab != null && _boxCollider != null)
         {
-            float delay = Random.Range(minSpawnInterval, maxSpawnInterval);
-            yield return new WaitForSeconds(delay);
+            _tierList?.CheckForTierChange();
 
-            Vector3 position = RandomPositionInBounds();
-            SpawnAt(position);
+            float delay;
+            if (tierIsActive)
+            {
+                SpawnTier tier = _tierList.currentTier;
+                delay = Random.Range(tier.MinTimeTick, tier.MaxTimeTick);
+            }
+            else
+            {
+                delay = Random.Range(minSpawnInterval, maxSpawnInterval);
+            }
+            yield return new WaitForSeconds(delay);
+            Vector3 position;
+
+            if (tierIsActive)
+            {
+                int count = Random.Range(_tierList.currentTier.MinEnemyVolume, _tierList.currentTier.MaxEnemyVolume);
+                for (int i = 0; i < count; i++)
+                {
+                    position = RandomPositionInBounds();
+                    SpawnAt(position);
+                }
+            }
+            else
+            {
+                position = RandomPositionInBounds();
+                SpawnAt(position);
+            }
         }
     }
 
@@ -76,6 +112,7 @@ public class EnemySpawner : MonoBehaviour
         if (go.TryGetComponent(out EnemyMovement movement))
         {
             movement.SetPlayer(playerBehavior);
+            movement.InitEnemy(_tierList?.currentTier);
         }
     }
 
@@ -109,12 +146,16 @@ public class EnemySpawner : MonoBehaviour
 
 public class TierList
 {
+    public SpawnTier currentTier;
+    
     private float currentTime;
     private float lastDocumentedTimeStamp;
     private float tierChangeTimeTick;
 
     private bool isTierChangesValid;
-    public SpawnTier currentTier;
+    private List<SpawnTier> tierList;
+    private int currentTierIndex;
+    private bool tierHitLimit;
     
     public TierList(float totalTiersTimeSpawn, List<SpawnTier> tiers)
     {
@@ -127,13 +168,14 @@ public class TierList
         {
             totalTiersTimeSpawn = 100;
         }
-        
-        tierChangeTimeTick = totalTiersTimeSpawn / totalTiersTimeSpawn;
+
+        this.tierList = tiers;
+        tierChangeTimeTick = totalTiersTimeSpawn / tierList.Count;
         isTierChangesValid = true;  
-        currentTier = tiers[0];
+        currentTier = tiers[currentTierIndex];
     }
 
-    public void StartTier(float startTime)
+    public void StartTiers()
     {
         if (!isTierChangesValid)
         {
@@ -141,14 +183,25 @@ public class TierList
             return;
         }
         currentTime = Time.time;
+        lastDocumentedTimeStamp = Time.time;
     }
     
     public void CheckForTierChange()
     {
+        if (tierHitLimit) return;
         // check the start time - current timer
         // save the delta
+        float deltaTime = Time.time - lastDocumentedTimeStamp;
         // how many times this delta fits inside the tierchangetimetick = current tier
+        int index = Mathf.Clamp(Mathf.FloorToInt(deltaTime / tierChangeTimeTick), 0, Mathf.Max(0, tierList.Count - 1));
         // safe guard from index < 0 or >= to list length
+        if (index != currentTierIndex)
+        {
+            currentTierIndex = index;
+            currentTier = tierList[index];
+        }
+
+        if (currentTierIndex == tierList.Count - 1) tierHitLimit = true;
     }
 }
 
@@ -157,6 +210,7 @@ public class SpawnTier
 {
     public float MinTimeTick;
     public float MaxTimeTick;
-    public float MinEnemyVoulme;
-    public float MaxEnemyVolume;
+    [Range(1,10)]public int MinEnemyVolume;
+    [Range(1,10)]public int MaxEnemyVolume;
+    [Range(0, 10)] public float EnemySpeed;
 }

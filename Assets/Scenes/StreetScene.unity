@@ -217,11 +217,17 @@ MonoBehaviour:
   minSpawnInterval: 2
   maxSpawnInterval: 5
   tiers:
-  - MinTimeTick: 0
-    MaxTimeTick: 0
-    MinEnemyVoulme: 0
-    MaxEnemyVolume: 0
-  totalTiersTimeSpawn: 0
+  - MinTimeTick: 1
+    MaxTimeTick: 1
+    MinEnemyVolume: 2
+    MaxEnemyVolume: 2
+    EnemySpeed: 3
+  - MinTimeTick: 1
+    MaxTimeTick: 1
+    MinEnemyVolume: 3
+    MaxEnemyVolume: 3
+    EnemySpeed: 8
+  totalTiersTimeSpawn: 20
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
