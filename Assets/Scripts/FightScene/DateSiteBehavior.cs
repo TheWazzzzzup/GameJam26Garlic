@@ -10,14 +10,13 @@ public class DateSiteBehavior : MonoBehaviour
     private void Awake()
     {
         GetComponent<Collider2D>().isTrigger = true;
-        Data.CurrentHealth = Data.MaxHealth;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            Debug.Log($"Date Site Attacked! {Data.EnemyDamage} hp hit!");
+            AcceptDamage(Data.EnemyDamage);
         }
     }
 
@@ -26,6 +25,7 @@ public class DateSiteBehavior : MonoBehaviour
         if (gameLost) return;
 
         Data.CurrentHealth -= damageAmount;
+        Debug.Log(Data.CurrentHealth);
 
         if (Data.CurrentHealth <= 0)
         {
@@ -35,6 +35,7 @@ public class DateSiteBehavior : MonoBehaviour
         }
         
         // Hit event
+        Debug.Log($"Date Site Attacked! {Data.EnemyDamage} hp hit!");
     }
 
 }
