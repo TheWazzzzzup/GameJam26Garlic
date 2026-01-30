@@ -46,7 +46,7 @@ public class ScaneManager : MonoBehaviour
         StartCoroutine(TransitionToScene(targetScene));
     }
 
-    public void LoadBothScenes()
+    private void LoadBothScenes()
     {
         if (string.IsNullOrEmpty(_sceneA) || string.IsNullOrEmpty(_sceneB))
         {
@@ -57,15 +57,14 @@ public class ScaneManager : MonoBehaviour
         UnitySceneManager.LoadScene(_sceneA, UnityEngine.SceneManagement.LoadSceneMode.Additive);
         UnitySceneManager.LoadScene(_sceneB, UnityEngine.SceneManagement.LoadSceneMode.Additive);
         
-        _currentScene = _sceneA;
-        
-        StartCoroutine(TransitionToScene(_currentScene));
+        SetSceneActive(_sceneB, false);
+        SetSceneActive(_sceneA, true);
     }
 
     private IEnumerator TransitionToScene(string targetScene)
     {
         _isTransitioning = true;
-
+        
         // Fade out
         yield return Fade(0f, 1f);
 
@@ -115,7 +114,7 @@ public class ScaneManager : MonoBehaviour
 
         foreach (var root in scene.GetRootGameObjects())
         {
-            var canvas = root.GetComponentInChildren<Canvas>();
+            var canvas = root.GetComponent<Canvas>();
             if (canvas != null)
             {
                canvas.gameObject.SetActive(active);

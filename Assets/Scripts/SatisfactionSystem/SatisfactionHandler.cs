@@ -16,7 +16,7 @@ namespace DefaultNamespace.SatisfactionSystem
         private SatisfactionConfig _config;
 
         public static float CurrentSatisfaction => _currentSatisfaction;
-        public float MaxSatisfaction => _config != null ? _config.OverAllSatisfaction : 0f;
+        private float MaxSatisfaction => _config != null ? _config.OverAllSatisfaction : 0f;
 
         private void Awake()
         {
@@ -58,23 +58,13 @@ namespace DefaultNamespace.SatisfactionSystem
             ModifySatisfaction(-reductionRate * Time.deltaTime);
         }
 
-        public void AddSatisfaction(float amount)
-        {
-            ModifySatisfaction(amount);
-        }
-
-        public void RemoveSatisfaction(float amount)
-        {
-            ModifySatisfaction(-amount);
-        }
-
-        public void ApplyCorrectAnswerBonus()
+        private void ApplyCorrectAnswerBonus()
         {
             if (_config != null)
                 ModifySatisfaction(_config.QuestionAnswerCorrectlyPoints);
         }
 
-        public void ApplyIncorrectAnswerPenalty()
+        private void ApplyIncorrectAnswerPenalty()
         {
             if (_config != null)
                 ModifySatisfaction(_config.QuestionAnswerIncorrectlyPoints);

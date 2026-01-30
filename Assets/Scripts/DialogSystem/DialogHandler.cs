@@ -144,6 +144,7 @@ namespace DialogSystem
                 r.pivot = new Vector2(0.5f, 1f);
                 r.anchoredPosition = new Vector2(0f, 0f); // Adjusted to sit exactly at the top
                 r.sizeDelta = new Vector2(0f, _config.FadeHeight);
+                _topFadeOverlay.gameObject.SetActive(true);
             }
 
             if (_bottomFadeOverlay != null)
@@ -159,6 +160,7 @@ namespace DialogSystem
                 r.pivot = new Vector2(0.5f, 0f);
                 r.anchoredPosition = new Vector2(0f, 0f); // Adjusted to sit exactly at the bottom
                 r.sizeDelta = new Vector2(0f, _config.FadeHeight);
+                _bottomFadeOverlay.gameObject.SetActive(true);
             }
         }
 
