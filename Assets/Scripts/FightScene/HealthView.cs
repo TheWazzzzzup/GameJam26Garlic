@@ -30,14 +30,14 @@ public class SatisfactionView : MonoBehaviour
     
     private void Awake()
     {
-        slider.maxValue = Data.MaxHealth;
+        slider.maxValue = Data.MaxSatisfaction;
         slider.minValue = 0;
-        text.text = $"Health:{Data.CurrentHealth}";
+        text.text = $"Satisfaction:{Data.CurrentSatisfaction}";
     }
 
     private void FixedUpdate()
     {
-        slider.value = Data.CurrentHealth;
-        text.text = $"Health:{Data.CurrentHealth}";
+        slider.value = Data.CurrentSatisfaction;
+        text.text = $"Satisfaction:{Data.CurrentSatisfaction}";
     }
 }

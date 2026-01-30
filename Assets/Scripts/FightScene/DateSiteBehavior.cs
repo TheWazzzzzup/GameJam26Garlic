@@ -30,6 +30,7 @@ public class DateSiteBehavior : MonoBehaviour
         if (Data.CurrentHealth <= 0)
         {
             // death event
+            Data.RaiseDeath();
             gameLost = true;
             return;
         }

@@ -1,3 +1,5 @@
+using System;
+
 namespace DefaultNamespace
 {
     public static class Data
@@ -7,9 +9,13 @@ namespace DefaultNamespace
         
         public static float MaxHealth = 1000;
         public static float CurrentHealth = MaxHealth;
-        public static float EnemyDamage = 5;
+        public static float EnemyDamage = 200;
 
         public static float MaxSatisfaction;
         public static float CurrentSatisfaction;
+
+        public static event Action OnDeath;
+
+        public static void RaiseDeath() => OnDeath?.Invoke();
     }
 }
