@@ -5,6 +5,7 @@ using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 /// <summary>
 /// Manages switching between two scenes that are loaded additively.
+/// Uses a single MainCamera with layer culling to show/hide scenes.
 /// Call SwitchScene() to smoothly transition between scenes with a fade effect.
 /// </summary>
 public class ScaneManager : MonoBehaviour
@@ -12,6 +13,11 @@ public class ScaneManager : MonoBehaviour
     [Header("Scenes")]
     [SerializeField] private string _sceneA;
     [SerializeField] private string _sceneB;
+    [SerializeField] private LayerMask _sceneALayer;
+    [SerializeField] private LayerMask _sceneBLayer;
+
+    [Header("Camera")]
+    [SerializeField] private Camera _mainCamera;
 
     [Header("Transition")]
     [SerializeField] private Image _fadeOverlay;
@@ -20,10 +26,13 @@ public class ScaneManager : MonoBehaviour
     private string _currentScene;
     private bool _isTransitioning;
 
-    private void Awake()
+    private void Start()
     {
         if (_fadeOverlay != null)
             _fadeOverlay.raycastTarget = false;
+
+        if (_mainCamera == null)
+            _mainCamera = Camera.main;
         
         LoadBothScenes();
     }
@@ -49,9 +58,8 @@ public class ScaneManager : MonoBehaviour
         UnitySceneManager.LoadScene(_sceneB, UnityEngine.SceneManagement.LoadSceneMode.Additive);
         
         _currentScene = _sceneA;
-        UnitySceneManager.SetActiveScene(UnitySceneManager.GetSceneByName(_sceneA));
         
-        SetSceneActive(_sceneB, false);
+        StartCoroutine(TransitionToScene(_currentScene));
     }
 
     private IEnumerator TransitionToScene(string targetScene)
@@ -95,62 +103,23 @@ public class ScaneManager : MonoBehaviour
 
     private void SetSceneActive(string sceneName, bool active)
     {
+        if (_mainCamera == null) return;
+
+        // Switch camera culling mask to show only the active scene's layer
+        LayerMask targetLayer = sceneName == _sceneA ? _sceneALayer : _sceneBLayer;
+        _mainCamera.cullingMask = targetLayer;
+
+        // Disable canvas interactivity for inactive scene
         var scene = UnitySceneManager.GetSceneByName(sceneName);
         if (!scene.IsValid()) return;
 
         foreach (var root in scene.GetRootGameObjects())
         {
-            // Disable all visual components but keep logic running
-            DisableVisualsRecursive(root, active);
+            var canvas = root.GetComponentInChildren<Canvas>();
+            if (canvas != null)
+            {
+               canvas.gameObject.SetActive(active);
+            }
         }
-    }
-
-    private void DisableVisualsRecursive(GameObject obj, bool active)
-    {
-        // Disable UI visuals
-        var canvas = obj.GetComponent<Canvas>();
-        if (canvas != null)
-        {
-            var canvasGroup = canvas.GetComponent<CanvasGroup>();
-            if (canvasGroup == null)
-                canvasGroup = canvas.gameObject.AddComponent<CanvasGroup>();
-            
-            canvasGroup.alpha = active ? 1f : 0f;
-            canvasGroup.interactable = active;
-            canvasGroup.blocksRaycasts = active;
-        }
-
-        // Disable sprite visuals
-        var spriteRenderer = obj.GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = active;
-
-        // Disable UI Image visuals
-        var image = obj.GetComponent<UnityEngine.UI.Image>();
-        if (image != null)
-            image.enabled = active;
-
-        // Disable UI RawImage visuals
-        var rawImage = obj.GetComponent<UnityEngine.UI.RawImage>();
-        if (rawImage != null)
-            rawImage.enabled = active;
-
-        // Disable TextMeshPro visuals
-        var tmpText = obj.GetComponent<TMPro.TextMeshProUGUI>();
-        if (tmpText != null)
-            tmpText.enabled = active;
-
-        var tmpText3D = obj.GetComponent<TMPro.TextMeshPro>();
-        if (tmpText3D != null)
-            tmpText3D.enabled = active;
-
-        // Disable particle systems
-        var particleSystem = obj.GetComponent<ParticleSystem>();
-        if (particleSystem != null)
-            particleSystem.enableEmission = active;
-
-        // Recurse through children
-        foreach (Transform child in obj.transform)
-            DisableVisualsRecursive(child.gameObject, active);
     }
 }
