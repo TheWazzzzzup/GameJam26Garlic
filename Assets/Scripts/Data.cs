@@ -6,7 +6,10 @@ namespace DefaultNamespace
         public static int TotalQuestions;
         
         public static float MaxHealth = 1000;
-        public static float CurrentHealth;
+        public static float CurrentHealth = MaxHealth;
         public static float EnemyDamage = 5;
+
+        public static float MaxSatisfaction;
+        public static float CurrentSatisfaction;
     }
 }
