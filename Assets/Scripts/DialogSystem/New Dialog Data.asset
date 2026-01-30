@@ -12,12 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7e6a7a7e46c14191819aae88fd283a2, type: 3}
   m_Name: New Dialog Data
   m_EditorClassIdentifier: 
-  Dialog: "dfgajbdf sdajng dksajkdsf kadsb gkdas g\n dgf hf hdsf hfdsh sdfhjs fd\n
-    hdsf jsfgj gfs jgfsads hsd\n hsdfhsfdjgsfjgfsadfh\nfsdhfdgdfsghfh  h y g ug yug
-    uy g g gu gu gui g ugiou g \n   hg iuhg iuh iuh iuh ih iu  \n  iu ghiu ghi h
-    ih ih uih iu \n  hjih iou ogft d eserw sw edft  \n  ji ohgtf td wre dfg uh j
-    i\n  hj ftrdesertfgyuh g tdfrdf yg ip fd rertwt dfgigui\n \n f x\nhdfs\nhsf\nj
-    sgfj \ngfs\nj sgf\n sfgjsgfjsgf jsgf\njfsd hsfdjgsf jsgf kjs gf\n ashdfs h"
+  Dialog: "\"Honestly, this wine is incredible, but I think I\u2019m mostly just
+    relieved to finally be sitting down. My day started at 5:00 AM, which is basically
+    a crime against humanity.\n\nI woke up to Barnaby\u2014my Maine Coon, you remember
+    him from my profile?\u2014sitting directly on my windpipe. He doesn't meow for
+    food; he just stares at you until you feel your soul leaving your body. After
+    I fed him his 'organic, hand-flaked' salmon, I tried to hop on a quick Zoom call
+    with my mom.\n\nShe\u2019s lovely, truly, but she spent twenty minutes explaining
+    why my brother\u2019s new tattoo is a 'sign of the apocalypse.' I love my family,
+    but they treat every minor inconvenience like a Shakespearean tragedy. I finally
+    hung up, grabbed my latte, and stepped outside, thinking it was just going to
+    be another Tuesday.\n\nThen I saw the first one.\n\nA guy in full black shinobi
+    gear was scaling the side of the Starbucks. People were just walking by, staring
+    at their phones, totally oblivious to the silent coup happening on the rooftops.
+    I realized then that the 'Ninja Revolution' I\u2019d seen rumored on the dark
+    web wasn't a joke.\n\nThey were everywhere, dropping from the rafters, armed
+    with smoke bombs and those little throwing stars. I couldn't just let them take
+    over the city; I have a Pilates class on Thursdays that I\u2019ve already paid
+    for.\n\nI didn't have a sword, but I did have a heavy-duty yoga mat and a very
+    hot triple-shot espresso. It\u2019s amazing what you can do with high-tension
+    rubber and caffeine when your adrenaline kicks in. I took out the lead scout
+    with a well-timed sweep of my gym bag\u2014thank god for heavy lifting.\n\nI
+    spent the next three hours parkouring across the financial district, dismantling
+    their communications network. I actually had to use a hairpin to short-circuit
+    their main EMP device near the pier. By the time the sun started to set, the
+    Grand Master realized I wasn't backing down and called for a strategic retreat.\n\nI
+    made it home just in time to see Barnaby had knocked my favorite vase off the
+    counter. He looked at me with so much judgment, like he was saying, 'You\u2019re
+    late with my treats, world-saver.'\n\nI did a quick load of laundry, scrubbed
+    the soot off my forehead, and put on this dress. And now I\u2019m here!\n\nSo...
+    that was my Tuesday. How was your day? Did you get those spreadsheets finished?\""
+  RightAnswerReply: "A guy in full black shinobi gear was scaling the side of the
+    Starbucks. People were just walking by, staring at their phones, totally oblivious
+    to the silent coup happening on the rooftops. I realized then that the 'Ninja
+    Revolution' I\u2019d seen rumored on the dark web wasn't a joke."
+  WrongAnswerReply: "She\u2019s lovely, truly, but she spent twenty minutes explaining
+    why my brother\u2019s new tattoo is a 'sign of the apocalypse.' I love my family,
+    but they treat every minor inconvenience like a Shakespearean tragedy. I finally
+    hung up, grabbed my latte, and stepped outside, thinking it was just going to
+    be another Tuesday."
   Question: Way you gay?
   Answers:
   - Yes!
@@ -25,5 +58,3 @@ MonoBehaviour:
   - No!
   - Maybe
   RightAnswer: 0
-  RightAnswerReply: Amzing so am I!
-  WrongAnswerReply: 'Shit '

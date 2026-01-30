@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7e6a7a7e46c14191819aae88fd283a2, type: 3}
+  m_Name: New Dialog Data 1
+  m_EditorClassIdentifier: 
+  Dialog: "\"You know, I\u2019m glad we chose this place. It\u2019s quiet. My morning
+    was the exact opposite\u2014absolute tectonic chaos.\n\nIt started when I found
+    a literal rift in the space-time continuum behind my toaster. I knew I shouldn't
+    have bought the budget brand. I reached back there to find a dropped crust, and
+    instead, I accidentally pulled out a translucent, glowing version of my cat,
+    Barnaby.\n\nThe 'Real' Barnaby was not thrilled. He spent the next hour trying
+    to hiss at his own fourth-dimensional shadow while I tried to explain to my sister
+    on the phone that I couldn't come to her gender reveal party because my kitchen
+    was currently a gateway to the Year 3000.\n\nMy family, bless them, didn't even
+    blink. My sister just said, 'Well, as long as the rift is blue or pink, just
+    bring a dip.'\n\nI gave up on the phone call because that\u2019s when the Neon
+    Shogunate arrived. They didn't come from the door; they folded themselves out
+    of the shadows of my kitchen cabinets. It was the start of the 'Great Indigo
+    Uprising'\u2014a ninja revolution fueled by sentient shadows.\n\nThey weren't
+    looking for money; they wanted my secret recipe for heirloom tomato sauce. Apparently,
+    in the shadow dimension, acidity is the only thing that can power their mecha-suits.\n\nI
+    had to defend the stovetop. I grabbed two silver ladles and channeled every ounce
+    of the fencing lessons my dad forced me to take in middle school. It was a blur
+    of silk, smoke, and garlic powder. I was parrying katanas with cookware, dodging
+    throwing stars that turned into butterflies upon impact.\n\nThe turning point
+    was when Barnaby\u2014the ghost one\u2014realized he could eat their smoke bombs.
+    He started glowing like a disco ball and floating around the room, which confused
+    the ninjas long enough for me to trap their leader in a Tupperware container.\n\nI
+    negotiated a peace treaty right there on the linoleum. They promised to leave
+    our dimension alone if I gave them a jar of Prego and a signed photo of Gordon
+    Ramsay.\n\nBy 3:00 PM, the rift closed, the shadow ninjas evaporated into a light
+    lavender mist, and I finally got to finish my laundry. Honestly, the hardest
+    part of the whole day was finding a pair of heels that didn't have scorch marks
+    on them for tonight.\n\nBut hey, the world is safe, the kitchen is clean, and
+    the wine is chilled. I\u2019d call that a win.\""
+  RightAnswerReply: "\"Oh, wow\u2014you actually were listening! I\u2019m impressed.
+    Most guys usually tune out the second I mention 'space-time continuum' or my
+    cat\u2019s dietary restrictions. It\u2019s a relief, honestly, because if the
+    Shogunate ever returns, I need a partner who knows the terms of the ceasefire.
+    That photo was actually a prized possession of mine; I won it in a cooking competition
+    back in college, but sacrificing it for the survival of the human race felt like
+    the right move. Gordon\u2019s forehead wrinkles apparently have a very calming,
+    almost religious effect on shadow-ninjas. It\u2019s nice to know I\u2019m sitting
+    across from someone who values the details. It makes me feel like I don't have
+    to filter the weirdness, you know? Plus, it means you\u2019re officially qualified
+    to help me if the toaster starts acting up again on our second date. How about
+    we split the lava cake to celebrate your excellent memory?\""
+  WrongAnswerReply: "\"Wait, really? The artichoke dip? Honestly, I\u2019m a little
+    insulted on behalf of the ninjas. Do you really think a high-ranking shadow assassin
+    from the fourth dimension would be satisfied with a mayonnaise-based appetizer?
+    That dip is my sister\u2019s pride and joy, but it doesn't have nearly enough
+    'culinary authority' to stop a revolution. It sounds like you might have drifted
+    off into a daydream while I was describing the literal folding of reality in
+    my kitchen! I get it, the wine is strong and I talk fast, but we\u2019re talking
+    about the safety of the planet here. Now I\u2019m worried that if a rift opened
+    up right under this table, you\u2019d be too busy thinking about spinach and
+    cheese to grab my hand and jump through. I guess I\u2019ll have to tell the story
+    again, but this time I\u2019m using the salt and pepper shakers to act out the
+    battle scenes so you stay focused. Pay attention\u2014this part involves the
+    ladles!\""
+  Question: "So, just to make sure you aren't thinking I\u2019m totally crazy...
+    according to my 'treaty' with the Neon Shogunate, what was the specific item
+    I had to give them\u2014along with the tomato sauce\u2014to save our dimension?"
+  Answers:
+  - A vintage map of the Tokyo subway system.
+  - A signed photo of Gordon Ramsay.
+  - "My sister\u2019s secret recipe for artichoke dip."
+  - A glowing whisker from the ghost of Barnaby.
+  RightAnswer: 1
